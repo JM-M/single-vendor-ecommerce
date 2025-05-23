@@ -25,7 +25,6 @@ export const CategoryDropdown = ({
 
   const onMouseEnter = () => {
     if (category.subcategories) {
-      console.log("hello");
       setIsOpen(true);
     }
   };
