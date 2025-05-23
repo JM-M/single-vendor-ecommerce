@@ -44,6 +44,7 @@ export const NavbarSidebar = ({ items, open, onOpenChange }: Props) => {
           })}
           <div className="border-t">
             <Link
+              prefetch
               href="/sign-in"
               className="flex w-full items-center p-4 text-left text-base font-medium hover:bg-black hover:text-white"
               onClick={() => onOpenChange(false)}
@@ -51,6 +52,7 @@ export const NavbarSidebar = ({ items, open, onOpenChange }: Props) => {
               Log in
             </Link>
             <Link
+              prefetch
               href="/sign-up"
               className="flex w-full items-center p-4 text-left text-base font-medium hover:bg-black hover:text-white"
               onClick={() => onOpenChange(false)}
