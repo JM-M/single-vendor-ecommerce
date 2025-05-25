@@ -7,10 +7,13 @@ import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ListFilterIcon } from "lucide-react";
+import { useParams } from "next/navigation";
 import { CategoriesSidebar } from "./categories-sidebar";
 import { CategoryDropdown } from "./category-dropdown";
 
 export const Categories = () => {
+  const params = useParams();
+
   const trpc = useTRPC();
   const { data } = useSuspenseQuery(trpc.categories.getMany.queryOptions());
 
@@ -22,7 +25,8 @@ export const Categories = () => {
   const [isAnyHovered, setIsAnyHovered] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const activeCategory = "all";
+  const categoryParam = params.category as string | undefined;
+  const activeCategory = categoryParam || "all";
 
   const activeCategoryIndex = data.findIndex(
     (cat) => cat.slug === activeCategory,
@@ -64,7 +68,7 @@ export const Categories = () => {
     <div className="relative w-full">
       <CategoriesSidebar open={isSidebarOpen} onOpenChange={setIsSidebarOpen} />
 
-      {/* Hidden div to mesure all items */}
+      {/* Hidden div to measure all items */}
       <div
         ref={measureRef}
         className="pointer-events-none absolute flex opacity-0"
@@ -97,6 +101,7 @@ export const Categories = () => {
                 category={category}
                 isActive={activeCategory === category.slug}
                 isNavigationHovered={isAnyHovered}
+                onClose={() => setIsAnyHovered(false)}
               />
             </div>
           );
