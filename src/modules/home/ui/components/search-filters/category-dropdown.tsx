@@ -8,16 +8,21 @@ import { useRef, useState } from "react";
 import { SubcategoryMenu } from "./subcategory-menu";
 import { useDropdownPosition } from "./use-dropdown-position";
 
+// TODO: When dropdown is closed and the mouse is outside the navbar,
+// isNavigationHovered remains true. Make it false in that case.
+
 interface Props {
   category: CategoriesGetManyOutput[number];
   isActive?: boolean;
   isNavigationHovered?: boolean;
+  onClose?: () => void;
 }
 
 export const CategoryDropdown = ({
   category,
   isActive,
   isNavigationHovered,
+  onClose,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -38,6 +43,7 @@ export const CategoryDropdown = ({
   const toggleDropdown = () => {
     if (category.subcategories.length) {
       setIsOpen(!isOpen);
+      if (isOpen && onClose) onClose();
     }
   };
 
@@ -54,9 +60,11 @@ export const CategoryDropdown = ({
           variant="elevated"
           className={cn(
             "hover:border-primary h-11 rounded-full border-transparent bg-transparent px-4 text-black hover:bg-white",
-            isActive && !isNavigationHovered && "border-primary bg-white",
-            isOpen &&
-              "border-primary -translate-x-[4px] -translate-y-[4px] bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]",
+            {
+              "border-primary bg-white": isActive && !isNavigationHovered,
+              "border-primary -translate-x-[4px] -translate-y-[4px] bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]":
+                isOpen,
+            },
           )}
           asChild
         >
