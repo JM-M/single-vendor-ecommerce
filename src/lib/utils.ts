@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function generateTenantURL(slug: string, childrenPath: string = "") {
-  return `/tenants/${slug}${childrenPath}`.replace(/\/+/g, "/");
+  return `/tenants/${slug}/${childrenPath}`.replace(/\/+/g, "/");
 }
 
 export function formatCurrency(value: number | string): string {
