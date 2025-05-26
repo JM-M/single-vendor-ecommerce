@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { InboxIcon, LoaderIcon } from "lucide-react";
-import { useProductFilters } from "../hooks/use-product-filters";
+import { useProductFilters } from "../../hooks/use-product-filters";
 import { ProductCard, ProductCardSkeleton } from "./product-card";
 
 interface Props {
