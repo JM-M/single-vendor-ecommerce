@@ -1,3 +1,4 @@
+import { NEOBRUTALISM_SHADOW } from "@/constants/tailwind-classes";
 import { CategoriesGetManyOutput } from "@/modules/categories/types";
 import { Category } from "@/payload-types";
 import Link from "next/link";
@@ -26,7 +27,10 @@ export const SubcategoryMenu = ({ category, isOpen, position }: Props) => {
       <div className="h-3 w-60" />
       <div
         style={{ backgroundColor }}
-        className="w-60 -translate-x-[2px] -translate-y-[2px] overflow-hidden rounded-md border text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+        className={
+          NEOBRUTALISM_SHADOW +
+          "w-60 -translate-x-[2px] -translate-y-[2px] overflow-hidden rounded-md border text-black"
+        }
       >
         <div>
           {category.subcategories.map((subcategory: Category) => (

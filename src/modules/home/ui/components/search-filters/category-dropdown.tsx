@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { NEOBRUTALISM_SHADOW } from "@/constants/tailwind-classes";
 import { cn } from "@/lib/utils";
 import { CategoriesGetManyOutput } from "@/modules/categories/types";
 import Link from "next/link";
@@ -62,7 +63,8 @@ export const CategoryDropdown = ({
             "hover:border-primary h-11 rounded-full border-transparent bg-transparent px-4 text-black hover:bg-white",
             {
               "border-primary bg-white": isActive && !isNavigationHovered,
-              "border-primary -translate-x-[4px] -translate-y-[4px] bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]":
+              [NEOBRUTALISM_SHADOW +
+              "border-primary -translate-x-[4px] -translate-y-[4px] bg-white"]:
                 isOpen,
             },
           )}
