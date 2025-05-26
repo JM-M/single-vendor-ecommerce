@@ -1,10 +1,12 @@
+// TODO: Add real ratings
+
 import { StarIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { HOVER_NEOBRUTALISM_SHADOW } from "@/constants/tailwind-classes";
-import { cn, generateTenantURL } from "@/lib/utils";
+import { cn, formatCurrency, generateTenantURL } from "@/lib/utils";
 
 interface ProductCardProps {
   id: string;
@@ -37,7 +39,7 @@ export const ProductCard = ({
   };
 
   return (
-    <Link href={`/products/${id}`}>
+    <Link href={generateTenantURL(tenantSlug, `/products/${id}`)}>
       <div
         className={cn(
           HOVER_NEOBRUTALISM_SHADOW,
@@ -77,13 +79,7 @@ export const ProductCard = ({
         </div>
         <div className="p-4">
           <div className="relative w-fit rounded-sm border bg-pink-400 px-2 py-1">
-            <p className="text-sm font-medium">
-              {new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-                maximumFractionDigits: 0,
-              }).format(Number(price))}
-            </p>
+            <p className="text-sm font-medium">{formatCurrency(price)}</p>
           </div>
         </div>
       </div>
