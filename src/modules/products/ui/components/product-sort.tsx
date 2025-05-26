@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useProductFilters } from "../hooks/use-product-filters";
+import { useProductFilters } from "../../hooks/use-product-filters";
 
 export const ProductSort = () => {
   const [filters, setFilters] = useProductFilters();

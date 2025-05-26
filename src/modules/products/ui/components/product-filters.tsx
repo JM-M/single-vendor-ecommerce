@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { ChevronDownIcon, ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
-import { useProductFilters } from "../hooks/use-product-filters";
+import { useProductFilters } from "../../hooks/use-product-filters";
 import { PriceFilter } from "./price-filter";
 import { TagsFilter } from "./tags-filter";
 
