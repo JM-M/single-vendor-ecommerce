@@ -7,7 +7,6 @@ import { CategoriesGetManyOutput } from "@/modules/categories/types";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { SubcategoryMenu } from "./subcategory-menu";
-import { useDropdownPosition } from "./use-dropdown-position";
 
 // TODO: When dropdown is closed and the mouse is outside the navbar,
 // isNavigationHovered remains true. Make it false in that case.
@@ -27,7 +26,6 @@ export const CategoryDropdown = ({
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { getDropdownPosition } = useDropdownPosition(dropdownRef);
 
   const onMouseEnter = () => {
     if (category.subcategories) {
@@ -38,8 +36,6 @@ export const CategoryDropdown = ({
   const onMouseLeave = () => {
     setIsOpen(false);
   };
-
-  const dropdownPosition = getDropdownPosition();
 
   const toggleDropdown = () => {
     if (category.subcategories.length) {
@@ -83,11 +79,7 @@ export const CategoryDropdown = ({
           />
         )}
       </div>
-      <SubcategoryMenu
-        category={category}
-        isOpen={isOpen}
-        position={dropdownPosition}
-      />
+      <SubcategoryMenu category={category} isOpen={isOpen} />
     </div>
   );
 };
