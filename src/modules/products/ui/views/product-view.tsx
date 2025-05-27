@@ -99,7 +99,7 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
                 <div className="flex items-center gap-2">
                   <StarRating rating={reviewRating} iconClassName="size-4" />
                   <p className="text-base font-medium">
-                    {reviewCount} rating{reviewCount > 1 && "s"}
+                    {reviewCount} rating{reviewCount === 1 && "s"}
                   </p>
                 </div>
               </div>
@@ -108,7 +108,7 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
               <div className="flex items-center gap-2">
                 <StarRating rating={reviewRating} iconClassName="size-4" />
                 <p className="text-base font-medium">
-                  {reviewCount} rating{reviewCount > 1 && "s"}
+                  {reviewCount} rating{reviewCount === 1 && "s"}
                 </p>
               </div>
             </div>
