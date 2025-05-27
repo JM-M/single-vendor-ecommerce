@@ -9,7 +9,7 @@ export const LibraryView = () => {
       <nav className="w-full border-b bg-[#F4F4F0] p-4">
         <Link prefetch href="/" className="flex items-center gap-2">
           <ArrowLeftIcon className="size-4" />
-          <span className="text font-medium">Continue shoppint</span>
+          <span className="text font-medium">Continue shopping</span>
         </Link>
       </nav>
 
