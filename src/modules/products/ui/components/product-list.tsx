@@ -58,7 +58,8 @@ export const ProductList = ({ category, tenantSlug, narrowView }: Props) => {
         )}
       >
         {products.map((product) => {
-          const { id, name, price, image, tenant } = product;
+          const { id, name, price, image, tenant, reviewRating, reviewCount } =
+            product;
           return (
             <ProductCard
               key={id}
@@ -68,8 +69,8 @@ export const ProductList = ({ category, tenantSlug, narrowView }: Props) => {
               price={price}
               tenantSlug={tenant?.slug}
               tenantImageUrl={tenant?.image?.url}
-              reviewRating={4}
-              reviewCount={5}
+              reviewRating={reviewRating}
+              reviewCount={reviewCount}
             />
           );
         })}

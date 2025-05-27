@@ -38,12 +38,6 @@ export const ReviewForm = ({ productId, initialData }: Props) => {
   const createReview = useMutation(
     trpc.reviews.create.mutationOptions({
       onSuccess: () => {
-        console.log(
-          "Query invalidated: ",
-          trpc.reviews.getOne.queryFilter({
-            productId,
-          }),
-        );
         queryClient.invalidateQueries(
           trpc.reviews.getOne.queryFilter({
             productId,
@@ -60,12 +54,6 @@ export const ReviewForm = ({ productId, initialData }: Props) => {
   const updateReview = useMutation(
     trpc.reviews.update.mutationOptions({
       onSuccess: () => {
-        console.log(
-          "Query invalidated: ",
-          trpc.reviews.getOne.queryFilter({
-            productId,
-          }),
-        );
         queryClient.invalidateQueries(
           trpc.reviews.getOne.queryFilter({
             productId,
@@ -88,7 +76,6 @@ export const ReviewForm = ({ productId, initialData }: Props) => {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("Form submitted with values:", values);
     if (initialData) {
       updateReview.mutate({
         reviewId: initialData.id,

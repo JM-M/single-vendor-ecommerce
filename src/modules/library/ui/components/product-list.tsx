@@ -38,7 +38,8 @@ export const ProductList = () => {
     <>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {products.map((product) => {
-          const { id, name, price, image, tenant } = product;
+          const { id, name, price, image, tenant, reviewRating, reviewCount } =
+            product;
           return (
             <ProductCard
               key={id}
@@ -48,8 +49,8 @@ export const ProductList = () => {
               price={price}
               tenantSlug={tenant?.slug}
               tenantImageUrl={tenant?.image?.url}
-              reviewRating={4}
-              reviewCount={5}
+              reviewRating={reviewRating}
+              reviewCount={reviewCount}
             />
           );
         })}
