@@ -4,8 +4,7 @@ import { DEFAULT_LIMIT } from "@/constants";
 import { LibraryView } from "@/modules/library/ui/views/library-view";
 import { getQueryClient, trpc } from "@/trpc/server";
 
-type Props = {};
-const LibraryPage = async (props: Props) => {
+const LibraryPage = async () => {
   const queryClient = getQueryClient();
   void queryClient.prefetchInfiniteQuery(
     trpc.library.getMany.infiniteQueryOptions({
