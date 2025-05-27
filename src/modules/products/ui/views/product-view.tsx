@@ -1,5 +1,6 @@
 "use client";
 
+import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { CheckCheckIcon, LinkIcon, StarIcon } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -99,7 +100,7 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
                 <div className="flex items-center gap-2">
                   <StarRating rating={reviewRating} iconClassName="size-4" />
                   <p className="text-base font-medium">
-                    {reviewCount} rating{reviewCount === 1 && "s"}
+                    {reviewCount} rating{reviewCount !== 1 && "s"}
                   </p>
                 </div>
               </div>
@@ -108,13 +109,16 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
               <div className="flex items-center gap-2">
                 <StarRating rating={reviewRating} iconClassName="size-4" />
                 <p className="text-base font-medium">
-                  {reviewCount} rating{reviewCount === 1 && "s"}
+                  {reviewCount} rating{reviewCount !== 1 && "s"}
                 </p>
               </div>
             </div>
             <div className="p-6">
               {description ? (
-                <p>{description}</p>
+                <RichText
+                  data={description}
+                  // converters={defaultJSXConverters}
+                />
               ) : (
                 <p className="text-muted-foreground font-medium italic">
                   No description provided
@@ -181,6 +185,23 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const ProductViewSkeleton = () => {
+  return (
+    <div className="px-4 py-10 lg:px-12">
+      <div className="overflow-hidden rounded-sm border bg-white">
+        <div className="relative aspect-[3.9] border-b">
+          <Image
+            src="/placeholder.png"
+            alt="Placeholder"
+            className="object-cover"
+            fill
+          />
         </div>
       </div>
     </div>
