@@ -39,11 +39,11 @@ export const Categories = () => {
       return;
 
     const calculateVisible = () => {
-      const containerWidth = containerRef.current!.offsetWidth;
-      const viewAllWidth = viewAllRef.current!.offsetWidth;
+      const containerWidth = containerRef.current?.offsetWidth || 0;
+      const viewAllWidth = viewAllRef.current?.offsetWidth || 0;
       const availableWidth = containerWidth - viewAllWidth;
 
-      const items = Array.from(measureRef.current!.children);
+      const items = Array.from(measureRef.current?.children || []);
       let totalWidth = 0;
       let visible = 0;
 
