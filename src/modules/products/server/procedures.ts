@@ -5,6 +5,7 @@ import { z } from "zod";
 import { DEFAULT_LIMIT } from "@/constants";
 import { Category, Media, Tenant } from "@/payload-types";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
+import { TRPCError } from "@trpc/server";
 import { sortValues } from "../hooks/search-params";
 
 export const productsRouter = createTRPCRouter({
@@ -26,6 +27,13 @@ export const productsRouter = createTRPCRouter({
           content: false,
         },
       });
+
+      if (product.isArchived) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Product not found",
+        });
+      }
 
       let isPurchased = false;
       if (session?.user) {
@@ -117,7 +125,11 @@ export const productsRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const where: Where = {};
+      const where: Where = {
+        isArchived: {
+          not_equals: true,
+        },
+      };
       let sort: Sort = "-createdAt";
 
       // TODO: Implement proper sorting
@@ -150,6 +162,13 @@ export const productsRouter = createTRPCRouter({
       if (input.tenantSlug) {
         where["tenant.slug"] = {
           equals: input.tenantSlug,
+        };
+      } else {
+        // If we are loading products on the public storefront,
+        // we want to exclude private set to "isPrivate: true".
+        // These products are only visible in the tenant's store.
+        where["isPrivate"] = {
+          not_equals: true,
         };
       }
 
