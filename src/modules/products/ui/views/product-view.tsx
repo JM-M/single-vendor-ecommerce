@@ -38,7 +38,8 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
     trpc.products.getOne.queryOptions({ id: productId }),
   );
 
-  const { name, image, price, tenant, description, refundPolicy } = data || {};
+  const { name, image, price, tenant, description, refundPolicy, isPurchased } =
+    data || {};
 
   return (
     <div className="px-4 py-10 lg:px-12">
@@ -109,7 +110,11 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
             <div className="h-full border-t lg:border-t-0 lg:border-l">
               <div className="flex flex-col gap-4 border-b p-6">
                 <div className="flex flex-row items-center gap-2">
-                  <CartButton productId={productId} tenantSlug={tenantSlug} />
+                  <CartButton
+                    isPurchased={isPurchased}
+                    productId={productId}
+                    tenantSlug={tenantSlug}
+                  />
                   <Button
                     className="size-12"
                     variant="elevated"
