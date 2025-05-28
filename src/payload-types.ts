@@ -72,7 +72,6 @@ export interface Config {
     categories: Category;
     products: Product;
     tags: Tag;
-    tenants: Tenant;
     orders: Order;
     reviews: Review;
     'payload-locked-documents': PayloadLockedDocument;
@@ -90,7 +89,6 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
-    tenants: TenantsSelect<false> | TenantsSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -137,12 +135,6 @@ export interface User {
   id: string;
   username: string;
   roles?: ('super-admin' | 'user')[] | null;
-  tenants?:
-    | {
-        tenant: string | Tenant;
-        id?: string | null;
-      }[]
-    | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -156,37 +148,10 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tenants".
- */
-export interface Tenant {
-  id: string;
-  /**
-   * This is the name of the store (e.g. Mike's Store)
-   */
-  name: string;
-  /**
-   * This is the subdomain for the store (e.g. [slug].cumroad.com)
-   */
-  slug: string;
-  image?: (string | null) | Media;
-  /**
-   * Stripe account ID associated with your shop.
-   */
-  stripeAccountId: string;
-  /**
-   * You cannot create products until you submit your Stripe details.
-   */
-  stripeDetailsSubmitted?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
   id: string;
-  tenant?: (string | null) | Tenant;
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -219,14 +184,11 @@ export interface Category {
   createdAt: string;
 }
 /**
- * You must verify your Stripe account before creating products.
- *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "products".
  */
 export interface Product {
   id: string;
-  tenant?: (string | null) | Tenant;
   name: string;
   description?: {
     root: {
@@ -273,10 +235,6 @@ export interface Product {
    * If checked, this product will not be displayed to buyers.
    */
   isArchived?: boolean | null;
-  /**
-   * If checked, this product will not be displayed on the public storefront. It will still be available in your shop.
-   */
-  isPrivate?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -300,14 +258,6 @@ export interface Order {
   name: string;
   user: string | User;
   product: string | Product;
-  /**
-   * Stripe Checkout Session ID for this order.
-   */
-  stripeCheckoutSessionId: string;
-  /**
-   * Stripe account associated with this order.
-   */
-  stripeAccountId?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -350,10 +300,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'tags';
         value: string | Tag;
-      } | null)
-    | ({
-        relationTo: 'tenants';
-        value: string | Tenant;
       } | null)
     | ({
         relationTo: 'orders';
@@ -412,12 +358,6 @@ export interface PayloadMigration {
 export interface UsersSelect<T extends boolean = true> {
   username?: T;
   roles?: T;
-  tenants?:
-    | T
-    | {
-        tenant?: T;
-        id?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -433,7 +373,6 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
-  tenant?: T;
   alt?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -465,7 +404,6 @@ export interface CategoriesSelect<T extends boolean = true> {
  * via the `definition` "products_select".
  */
 export interface ProductsSelect<T extends boolean = true> {
-  tenant?: T;
   name?: T;
   description?: T;
   price?: T;
@@ -475,7 +413,6 @@ export interface ProductsSelect<T extends boolean = true> {
   refundPolicy?: T;
   content?: T;
   isArchived?: T;
-  isPrivate?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -491,27 +428,12 @@ export interface TagsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tenants_select".
- */
-export interface TenantsSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  image?: T;
-  stripeAccountId?: T;
-  stripeDetailsSubmitted?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "orders_select".
  */
 export interface OrdersSelect<T extends boolean = true> {
   name?: T;
   user?: T;
   product?: T;
-  stripeCheckoutSessionId?: T;
-  stripeAccountId?: T;
   updatedAt?: T;
   createdAt?: T;
 }

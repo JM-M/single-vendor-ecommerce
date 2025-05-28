@@ -1,7 +1,6 @@
 // storage-adapter-import-placeholder
 import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { payloadCloudPlugin } from "@payloadcms/payload-cloud";
-import { multiTenantPlugin } from "@payloadcms/plugin-multi-tenant";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import path from "path";
@@ -15,10 +14,7 @@ import { Orders } from "./collections/Orders";
 import { Products } from "./collections/Products";
 import { Reviews } from "./collections/Reviews";
 import { Tags } from "./collections/Tags";
-import { Tenants } from "./collections/Tenants";
 import { Users } from "./collections/Users";
-import { isSuperAdmin } from "./lib/access";
-import { Config } from "./payload-types";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -29,20 +25,8 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
-    components: {
-      beforeNavLinks: ["@/components/stripe-verify#StripeVerify"],
-    },
   },
-  collections: [
-    Users,
-    Media,
-    Categories,
-    Products,
-    Tags,
-    Tenants,
-    Orders,
-    Reviews,
-  ],
+  collections: [Users, Media, Categories, Products, Tags, Orders, Reviews],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
@@ -54,16 +38,6 @@ export default buildConfig({
   sharp,
   plugins: [
     payloadCloudPlugin(),
-    multiTenantPlugin<Config>({
-      collections: {
-        products: {},
-        media: {},
-      },
-      tenantsArrayField: {
-        includeDefaultField: false,
-      },
-      userHasAccessToAllTenants: (user) => isSuperAdmin(user),
-    }),
     vercelBlobStorage({
       enabled: true,
       // clientUploads: true, // Server uploads are limited to 4.5MB

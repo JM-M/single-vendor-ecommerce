@@ -1,4 +1,3 @@
-import { stripe } from "@/lib/stripe";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { headers as getHeaders } from "next/headers";
@@ -69,35 +68,12 @@ export const authRouter = createTRPCRouter({
         });
       }
 
-      const account = await stripe.accounts.create({});
-
-      if (!account) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to create Stripe account",
-        });
-      }
-
-      const tenant = await ctx.db.create({
-        collection: "tenants",
-        data: {
-          name: input.username,
-          slug: input.username,
-          stripeAccountId: account.id,
-        },
-      });
-
       await ctx.db.create({
         collection: "users",
         data: {
           email: input.email,
           username: input.username,
           password: input.password, // Payload automatically handles hashing
-          tenants: [
-            {
-              tenant: tenant.id,
-            },
-          ],
         },
       });
 

@@ -7,7 +7,7 @@ export const Orders: CollectionConfig = {
     create: ({ req }) => isSuperAdmin(req.user),
     update: ({ req }) => isSuperAdmin(req.user),
     delete: ({ req }) => isSuperAdmin(req.user),
-    read: ({ req }) => isSuperAdmin(req.user), // Only super admins can read orders. TODO: Consider allowing each tenant to read their own orders.
+    read: ({ req }) => isSuperAdmin(req.user), // TODO: Allow admins, not only super admins to read orders.
   },
   admin: {
     useAsTitle: "name",
@@ -31,21 +31,6 @@ export const Orders: CollectionConfig = {
       relationTo: "products",
       required: true,
       hasMany: false,
-    },
-    {
-      name: "stripeCheckoutSessionId",
-      type: "text",
-      required: true,
-      admin: {
-        description: "Stripe Checkout Session ID for this order.",
-      },
-    },
-    {
-      name: "stripeAccountId",
-      type: "text",
-      admin: {
-        description: "Stripe account associated with this order.",
-      },
     },
   ],
 };

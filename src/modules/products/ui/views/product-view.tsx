@@ -5,13 +5,12 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { CheckCheckIcon, LinkIcon, StarIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import Link from "next/link";
 import { Fragment, useState } from "react";
 
 import { StarRating } from "@/components/stars-rating";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { formatCurrency, generateTenantURL } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 import { useTRPC } from "@/trpc/client";
 import { toast } from "sonner";
 
@@ -29,10 +28,9 @@ const CartButton = dynamic(
 
 interface ProductViewProps {
   productId: string;
-  tenantSlug: string;
 }
 
-export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
+export const ProductView = ({ productId }: ProductViewProps) => {
   const [isCopied, setIsCopied] = useState(false);
 
   const trpc = useTRPC();
@@ -44,7 +42,6 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
     name,
     image,
     price,
-    tenant,
     description,
     refundPolicy,
     isPurchased,
@@ -76,25 +73,6 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
                     {formatCurrency(price || "")}
                   </p>
                 </div>
-              </div>
-              <div className="flex items-center justify-center px-6 py-4 lg:border-r">
-                <Link
-                  href={generateTenantURL(tenantSlug)}
-                  className="flex items-center gap-2"
-                >
-                  {tenant?.image && (
-                    <Image
-                      src={tenant?.image?.url || "/placeholder.png"}
-                      alt={tenant?.name}
-                      width={20}
-                      height={20}
-                      className="size-[20px] shrink-0 rounded-full border"
-                    />
-                  )}
-                  <p className="text-base font-medium underline">
-                    {tenant?.name}
-                  </p>
-                </Link>
               </div>
               <div className="hidden items-center justify-center px-6 py-4 lg:flex">
                 <div className="flex items-center gap-2">
@@ -130,11 +108,7 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
             <div className="h-full border-t lg:border-t-0 lg:border-l">
               <div className="flex flex-col gap-4 border-b p-6">
                 <div className="flex flex-row items-center gap-2">
-                  <CartButton
-                    isPurchased={isPurchased}
-                    productId={productId}
-                    tenantSlug={tenantSlug}
-                  />
+                  <CartButton isPurchased={isPurchased} productId={productId} />
                   <Button
                     className="size-12"
                     variant="elevated"

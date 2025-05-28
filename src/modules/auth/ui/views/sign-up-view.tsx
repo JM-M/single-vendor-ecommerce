@@ -21,6 +21,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { registerSchema } from "../../schemas";
+import { siteConfig } from "@/site.config";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -76,7 +77,7 @@ export const SignUpView = () => {
                 <span
                   className={cn("text-2xl font-semibold", poppins.className)}
                 >
-                  CumRoad
+                  {siteConfig.name}
                 </span>
               </Link>
               <Button
@@ -91,7 +92,7 @@ export const SignUpView = () => {
               </Button>
             </div>
             <h1 className="text-4xl font-medium">
-              Join over 1000 creators earning money on CumRoad.
+              Join over 1000 creators earning money on {siteConfig.name}.
             </h1>
             <FormField
               name="username"

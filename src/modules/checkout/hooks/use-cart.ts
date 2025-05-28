@@ -2,25 +2,22 @@ import { useCallback } from "react";
 import { useShallow } from "zustand/shallow";
 import { useCartStore } from "../store/use-cart-store";
 
-export const useCart = (tenantSlug: string) => {
+export const useCart = () => {
   const addProduct = useCartStore((state) => state.addProduct);
   const removeProduct = useCartStore((state) => state.removeProduct);
   const clearCart = useCartStore((state) => state.clearCart);
-  const clearAllCarts = useCartStore((state) => state.clearAllCarts);
 
-  const productIds = useCartStore(
-    useShallow((state) => state.tenantCarts[tenantSlug]?.productIds || []),
-  );
+  const productIds = useCartStore(useShallow((state) => state.productIds));
 
   const toggleProduct = useCallback(
     (productId: string) => {
       if (productIds.includes(productId)) {
-        removeProduct(tenantSlug, productId);
+        removeProduct(productId);
       } else {
-        addProduct(tenantSlug, productId);
+        addProduct(productId);
       }
     },
-    [addProduct, removeProduct, productIds, tenantSlug],
+    [addProduct, removeProduct, productIds],
   );
 
   const isProductInCart = useCallback(
@@ -30,27 +27,22 @@ export const useCart = (tenantSlug: string) => {
     [productIds],
   );
 
-  const clearTenantCart = useCallback(() => {
-    clearCart(tenantSlug);
-  }, [clearCart, tenantSlug]);
-
   const handleAddProduct = useCallback(
-    (productId: string) => addProduct(tenantSlug, productId),
-    [addProduct, tenantSlug],
+    (productId: string) => addProduct(productId),
+    [addProduct],
   );
 
   const handleRemoveProduct = useCallback(
-    (productId: string) => removeProduct(tenantSlug, productId),
-    [removeProduct, tenantSlug],
+    (productId: string) => removeProduct(productId),
+    [removeProduct],
   );
 
   return {
     productIds,
     addProduct: handleAddProduct,
     removeProduct: handleRemoveProduct,
-    clearCart: clearTenantCart,
+    clearCart,
     toggleProduct,
-    clearAllCarts,
     isProductInCart,
     totalItems: productIds.length,
   };

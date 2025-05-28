@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { siteConfig } from "@/site.config";
 import { useTRPC } from "@/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -69,7 +70,7 @@ export const SignInView = () => {
                 <span
                   className={cn("text-2xl font-semibold", poppins.className)}
                 >
-                  CumRoad
+                  {siteConfig.name}
                 </span>
               </Link>
               <Button
@@ -84,7 +85,7 @@ export const SignInView = () => {
               </Button>
             </div>
             <h1 className="text-4xl font-medium">
-              Join over 1000 creators earning money on CumRoad.
+              Join over 1000 creators earning money on {siteConfig.name}.
             </h1>
             <FormField
               name="email"
