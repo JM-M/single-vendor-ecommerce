@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { generateTenantURL } from "@/lib/utils";
 
 interface Props {
   slug: string;
@@ -13,7 +12,7 @@ export const Navbar = ({ slug }: Props) => {
       <div className="mx-auto flex h-full max-w-(--breakpoint-xl) items-center justify-between px-4 lg:px-12">
         <p className="text-xl capitalize">Checkout</p>
         <Button variant="elevated" asChild>
-          <Link href={generateTenantURL(slug)}>Continue Shopping</Link>
+          <Link href="/">Continue Shopping</Link>
         </Button>
       </div>
     </nav>

@@ -6,21 +6,16 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
-import { generateTenantURL } from "@/lib/utils";
 import { useTRPC } from "@/trpc/client";
 import { useCart } from "../../hooks/use-cart";
 import { useCheckoutStates } from "../../hooks/use-checkout-states";
 import { CheckoutItem } from "../components/checkout-item";
 import { CheckoutSidebar } from "../components/checkout-sidebar";
 
-interface CheckoutViewProps {
-  tenantSlug: string;
-}
-
-export const CheckoutView = ({ tenantSlug }: CheckoutViewProps) => {
+export const CheckoutView = () => {
   const router = useRouter();
   const [states, setStates] = useCheckoutStates();
-  const { productIds, clearCart, removeProduct } = useCart(tenantSlug);
+  const { productIds, clearCart, removeProduct } = useCart();
 
   const trpc = useTRPC();
   const queryClient = useQueryClient();
@@ -109,7 +104,7 @@ export const CheckoutView = ({ tenantSlug }: CheckoutViewProps) => {
         <div className="lg:col-span-4">
           <div className="overflow-hidden rounded-md border bg-white">
             {data?.docs.map((product, index) => {
-              const { id, name, price, image, tenant } = product;
+              const { id, name, price, image } = product;
               const isLast = index === data.docs.length - 1;
               return (
                 <CheckoutItem
@@ -117,9 +112,7 @@ export const CheckoutView = ({ tenantSlug }: CheckoutViewProps) => {
                   name={name}
                   isLast={isLast}
                   imageUrl={image?.url}
-                  productUrl={generateTenantURL(tenant.slug, `/products/${id}`)}
-                  tenantUrl={generateTenantURL(tenant.slug)}
-                  tenantName={tenant.name}
+                  productUrl={`/products/${id}`}
                   price={price}
                   onRemove={() => removeProduct(id)}
                 />
@@ -130,7 +123,7 @@ export const CheckoutView = ({ tenantSlug }: CheckoutViewProps) => {
         <div className="lg:col-span-3">
           <CheckoutSidebar
             total={data?.totalPrice || 0}
-            onPurchase={() => purchase.mutate({ tenantSlug, productIds })}
+            onPurchase={() => purchase.mutate({ productIds })}
             isCanceled={states.cancel}
             disabled={purchase.isPending}
           />

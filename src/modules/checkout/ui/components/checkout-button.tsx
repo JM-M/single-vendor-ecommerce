@@ -2,21 +2,19 @@ import { ShoppingCartIcon } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { cn, generateTenantURL } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { useCart } from "../../hooks/use-cart";
 
 interface CheckoutButtonProps {
   className?: string;
   hideIfEmpty?: boolean;
-  tenantSlug: string;
 }
 
 export const CheckoutButton = ({
   className = "",
   hideIfEmpty,
-  tenantSlug,
 }: CheckoutButtonProps) => {
-  const { totalItems } = useCart(tenantSlug);
+  const { totalItems } = useCart();
 
   if (hideIfEmpty && totalItems === 0) {
     return null;
@@ -24,7 +22,7 @@ export const CheckoutButton = ({
 
   return (
     <Button variant="elevated" asChild className={cn("bg-white", className)}>
-      <Link href={generateTenantURL(tenantSlug, "/checkout")}>
+      <Link href="/checkout">
         <ShoppingCartIcon />
         {totalItems > 0 && totalItems}
       </Link>

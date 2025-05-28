@@ -11,11 +11,10 @@ import { ProductCard, ProductCardSkeleton } from "./product-card";
 
 interface Props {
   category?: string;
-  tenantSlug?: string;
   narrowView?: boolean;
 }
 
-export const ProductList = ({ category, tenantSlug, narrowView }: Props) => {
+export const ProductList = ({ category, narrowView }: Props) => {
   const [filters] = useProductFilters();
 
   const trpc = useTRPC();
@@ -25,7 +24,6 @@ export const ProductList = ({ category, tenantSlug, narrowView }: Props) => {
         {
           ...filters,
           category,
-          tenantSlug,
           limit: DEFAULT_LIMIT,
         },
         {
@@ -58,8 +56,7 @@ export const ProductList = ({ category, tenantSlug, narrowView }: Props) => {
         )}
       >
         {products.map((product) => {
-          const { id, name, price, image, tenant, reviewRating, reviewCount } =
-            product;
+          const { id, name, price, image, reviewRating, reviewCount } = product;
           return (
             <ProductCard
               key={id}
@@ -67,8 +64,6 @@ export const ProductList = ({ category, tenantSlug, narrowView }: Props) => {
               name={name}
               imageUrl={image?.url}
               price={price}
-              tenantSlug={tenant?.slug}
-              tenantImageUrl={tenant?.image?.url}
               reviewRating={reviewRating}
               reviewCount={reviewCount}
             />

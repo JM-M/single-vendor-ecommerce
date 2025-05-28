@@ -1,23 +1,15 @@
 import { isSuperAdmin } from "@/lib/access";
-import { Tenant } from "@/payload-types";
 import type { CollectionConfig } from "payload";
 
 export const Products: CollectionConfig = {
   slug: "products",
   access: {
-    create: ({ req }) => {
-      if (isSuperAdmin(req.user)) return true;
-
-      const tenant = req.user?.tenants?.[0]?.tenant as Tenant;
-
-      return Boolean(tenant?.stripeDetailsSubmitted);
-    },
+    // TODO: Allow Admins to create products toop
+    create: ({ req }) => isSuperAdmin(req.user),
     delete: ({ req }) => isSuperAdmin(req.user),
   },
   admin: {
     useAsTitle: "name",
-    description:
-      "You must verify your Stripe account before creating products.",
   },
   fields: [
     {
@@ -27,7 +19,6 @@ export const Products: CollectionConfig = {
     },
     {
       name: "description",
-      // TODO: Use rich text
       type: "richText",
     },
     {
@@ -64,23 +55,6 @@ export const Products: CollectionConfig = {
     {
       name: "content",
       type: "richText",
-      // editor: lexicalEditor({
-      //   features: ({ defaultFeatures }) => [
-      //     ...defaultFeatures,
-      //     UploadFeature({
-      //       collections: {
-      //         media: {
-      //           fields: [
-      //             {
-      //               name: "name",
-      //               type: "text",
-      //             },
-      //           ],
-      //         },
-      //       },
-      //     }),
-      //   ],
-      // }),
       admin: {
         description:
           "Protected content only visible to customers after purchase. Add product documentation, downloadable files, getting started guide etc. Supports markdown formatting.",
@@ -94,16 +68,6 @@ export const Products: CollectionConfig = {
       admin: {
         description:
           "If checked, this product will not be displayed to buyers.",
-      },
-    },
-    {
-      name: "isPrivate",
-      label: "Private",
-      defaultValue: false,
-      type: "checkbox",
-      admin: {
-        description:
-          "If checked, this product will not be displayed on the public storefront. It will still be available in your shop.",
       },
     },
   ],

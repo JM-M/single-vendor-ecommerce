@@ -9,8 +9,6 @@ interface ProductCardProps {
   id: string;
   name: string;
   imageUrl?: string | null;
-  tenantSlug: string;
-  tenantImageUrl?: string | null;
   reviewRating: number;
   reviewCount: number;
 }
@@ -19,8 +17,6 @@ export const ProductCard = ({
   id,
   name,
   imageUrl,
-  tenantSlug,
-  tenantImageUrl,
   reviewRating,
   reviewCount,
 }: ProductCardProps) => {
@@ -42,18 +38,6 @@ export const ProductCard = ({
         </div>
         <div className="flex flex-1 flex-col gap-3 border-y p-4">
           <h2 className="line-clamp-4 text-lg font-medium">{name}</h2>
-          <div className="flex items-center gap-2">
-            {tenantImageUrl && (
-              <Image
-                alt={tenantSlug}
-                src={tenantImageUrl}
-                width={16}
-                height={16}
-                className="size-[16px] shrink-0 rounded-full border"
-              />
-            )}
-            <p className="text-sm font-medium underline">{tenantSlug}</p>
-          </div>
           {reviewCount > 0 && (
             <div className="flex items-center gap-1">
               <StarIcon className="size-3.5 fill-black" />

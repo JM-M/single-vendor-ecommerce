@@ -7,8 +7,6 @@ interface CheckoutItemProps {
   name: string;
   imageUrl?: string | null;
   productUrl: string;
-  tenantUrl: string;
-  tenantName: string;
   price: number;
   onRemove: () => void;
 }
@@ -18,8 +16,6 @@ export const CheckoutItem = ({
   name,
   imageUrl,
   productUrl,
-  tenantUrl,
-  tenantName,
   price,
   onRemove,
 }: CheckoutItemProps) => {
@@ -44,9 +40,6 @@ export const CheckoutItem = ({
         <div>
           <Link href={productUrl}>
             <h4 className="font-bold underline">{name}</h4>
-          </Link>
-          <Link href={tenantUrl}>
-            <p className="font-medium underline">{tenantName}</p>
           </Link>
         </div>
       </div>

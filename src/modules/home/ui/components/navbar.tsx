@@ -7,6 +7,7 @@ import { PropsWithChildren, ReactNode, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { siteConfig } from "@/site.config";
 import { useTRPC } from "@/trpc/client";
 import { useQuery } from "@tanstack/react-query";
 import { MenuIcon } from "lucide-react";
@@ -57,7 +58,7 @@ export const Navbar = () => {
     <nav className="flex h-20 items-center justify-between border-b bg-white font-medium">
       <Link href="/" className="pl-6">
         <span className={cn("text-5xl font-semibold", poppins.className)}>
-          CumRoad
+          {siteConfig.name}
         </span>
       </Link>
 
