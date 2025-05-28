@@ -36,7 +36,7 @@ export const Users: CollectionConfig = {
   },
   auth: {
     cookies: {
-      ...(process.env.NODE_ENV !== "production" && {
+      ...(process.env.NODE_ENV === "production" && {
         sameSite: "None",
         domain: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
         secure: true,
