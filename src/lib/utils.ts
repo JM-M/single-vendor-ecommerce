@@ -13,7 +13,7 @@ export function generateTenantURL(slug: string, childrenPath: string = "") {
     );
   }
 
-  let protocol = "https";
+  const protocol = "https";
   const domain = process.env.NEXT_PUBLIC_ROOT_DOMAIN!;
 
   // if (process.env.NODE_ENV === "development") {

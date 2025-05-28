@@ -7,6 +7,7 @@ import {
 import { getQueryClient, trpc } from "@/trpc/server";
 import { Suspense } from "react";
 
+export const dynamic = "force-dynamic";
 interface Props {
   params: Promise<{
     productId: string;

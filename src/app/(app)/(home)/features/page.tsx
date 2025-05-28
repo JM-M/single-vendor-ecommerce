@@ -1,5 +1,4 @@
-type Props = {};
-const FeaturesPage = (props: Props) => {
+const FeaturesPage = () => {
   return <div>Features Page</div>;
 };
 export default FeaturesPage;
