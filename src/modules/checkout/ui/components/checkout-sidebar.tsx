@@ -1,20 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
-import { CircleXIcon } from "lucide-react";
 import { useCart } from "../../hooks/use-cart";
 import { useCheckout } from "../../hooks/use-checkout";
 import { usePurchase } from "../../hooks/use-purchase";
 import { DeliveryForm } from "./delivery-form";
 
-interface CheckoutSidebarProps {
-  isCanceled?: boolean;
-}
-
-export const CheckoutSidebar = ({
-  isCanceled = false,
-}: CheckoutSidebarProps) => {
-  const { productIds } = useCart();
-  const { checkout } = useCheckout();
+export const CheckoutSidebar = () => {
+  const { productIds, products: cartProducts } = useCart();
+  const { checkout, delivery } = useCheckout();
   const { purchase } = usePurchase();
 
   const { data, isFetching } = checkout;
@@ -49,14 +42,24 @@ export const CheckoutSidebar = ({
       <div className="flex items-center justify-center p-4">
         <Button
           variant="elevated"
-          disabled={disabled}
-          onClick={() => purchase.mutate({ productIds })}
+          disabled={disabled || !total}
+          onClick={() =>
+            purchase.mutate({
+              email: delivery.email,
+              productIds,
+              cartProducts: cartProducts ?? [],
+              state: delivery.state,
+              city: delivery.city,
+              displayedTotal: total ?? 0,
+            })
+          }
           className="bg-primary hover:text-primary w-full text-base text-white hover:bg-pink-400"
         >
           Checkout
         </Button>
       </div>
-      {isCanceled && (
+      {/* TODO: Implement cancelled handling */}
+      {/* {isCanceled && (
         <div className="flex items-center justify-center border-t p-4">
           <div className="flex w-full items-center rounded bg-red-100 px-4 py-3 font-medium text-red-500">
             <div className="flex items-center">
@@ -65,7 +68,7 @@ export const CheckoutSidebar = ({
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

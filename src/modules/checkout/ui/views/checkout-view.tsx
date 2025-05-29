@@ -1,6 +1,5 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
 import { InboxIcon, LoaderIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -8,39 +7,15 @@ import { toast } from "sonner";
 
 import { useCart } from "../../hooks/use-cart";
 import { useCheckout } from "../../hooks/use-checkout";
-import { useCheckoutStates } from "../../hooks/use-checkout-states";
 import { CheckoutItem } from "../components/checkout-item";
 import { CheckoutSidebar } from "../components/checkout-sidebar";
 
 export const CheckoutView = () => {
   const router = useRouter();
-  const [states, setStates] = useCheckoutStates();
   const { clearCart, clearProduct } = useCart();
 
   const { checkout } = useCheckout();
   const { data, error, isLoading } = checkout;
-
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    if (states.success) {
-      setStates({
-        success: false,
-        cancel: false,
-      });
-      clearCart();
-      // TODO: Invalidate orders query
-      // queryClient.invalidateQueries(trpc.library.getMany.infiniteQueryFilter());
-      router.push("/library");
-    }
-  }, [
-    states.success,
-    clearCart,
-    router,
-    setStates,
-    queryClient,
-    // trpc.library.getMany,
-  ]);
 
   // TODO: Rather than clearing the cart, we should remove the mark invalid products
   // as no longer available, so the user can still see them in the cart.
@@ -97,7 +72,7 @@ export const CheckoutView = () => {
           </div>
         </div>
         <div className="lg:col-span-3">
-          <CheckoutSidebar isCanceled={states.cancel} />
+          <CheckoutSidebar />
         </div>
       </div>
     </div>

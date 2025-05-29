@@ -2,14 +2,16 @@ import { siteConfig } from "@/site.config";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+export type CartProduct = { id: string; qty: number };
+
 interface CartState {
-  products: { id: string; qty: number }[];
+  products: CartProduct[];
   addProduct: (productId: string) => void;
   removeProduct: (productId: string) => void;
   clearProduct: (productId: string) => void;
   clearCart: () => void;
   getCart: () => string[];
-  getCartProduct: (productId: string) => { id: string; qty: number } | null;
+  getCartProduct: (productId: string) => CartProduct | null;
 }
 
 export const useCartStore = create<CartState>()(

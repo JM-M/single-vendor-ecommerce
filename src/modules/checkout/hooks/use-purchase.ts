@@ -3,24 +3,23 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { useTRPC } from "@/trpc/client";
-import { useCheckoutStates } from "./use-checkout-states";
 
 export const usePurchase = () => {
   const router = useRouter();
-  const [, setStates] = useCheckoutStates();
 
   const trpc = useTRPC();
 
   const purchase = useMutation(
     trpc.checkout.purchase.mutationOptions({
-      onMutate: () => {
-        setStates({
-          success: false,
-          cancel: false,
-        });
-      },
-      onSuccess: (data) => {
-        window.location.href = data.url;
+      onSuccess: async (data) => {
+        if (typeof window !== "undefined") {
+          const { default: PaystackPop } = await import("@paystack/inline-js");
+          // Open Paystack popup
+          const popup = new PaystackPop();
+          popup.resumeTransaction(data.accessCode);
+          // TODO: Initiate polling of order to see if payment has been updated.
+          // Ensure the page works on reload by keeping track of a checkout state
+        }
       },
       onError: (error) => {
         if (error.data?.code === "UNAUTHORIZED") {
