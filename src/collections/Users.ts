@@ -1,13 +1,13 @@
-import { isSuperAdmin } from "@/lib/access";
+import { isAdmin, isSuperAdmin } from "@/lib/access";
 import type { CollectionConfig } from "payload";
 
 export const Users: CollectionConfig = {
   slug: "users",
   access: {
     read: () => true,
-    create: ({ req }) => isSuperAdmin(req.user),
+    create: ({ req }) => isAdmin(req.user),
     update: ({ req, id }) => {
-      if (isSuperAdmin(req.user)) return true;
+      if (isAdmin(req.user)) return true;
       // Allow users to update their own profile
       return req.user?.id === id;
     },
@@ -15,7 +15,7 @@ export const Users: CollectionConfig = {
   },
   admin: {
     useAsTitle: "email",
-    hidden: ({ user }) => !isSuperAdmin(user),
+    hidden: ({ user }) => !isAdmin(user),
   },
   auth: {
     cookies: {
@@ -42,7 +42,7 @@ export const Users: CollectionConfig = {
       type: "select",
       defaultValue: "user",
       hasMany: true,
-      options: ["super-admin", "user"],
+      options: ["super-admin", "admin", "user"],
       access: {
         update: ({ req }) => isSuperAdmin(req.user),
       },

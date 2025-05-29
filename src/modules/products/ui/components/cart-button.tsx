@@ -1,39 +1,62 @@
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { useCart } from "@/modules/checkout/hooks/use-cart";
-import Link from "next/link";
+import { MinusIcon, PlusIcon } from "lucide-react";
 
 interface Props {
   productId: string;
   isPurchased?: boolean;
+  disableProductRemoval?: boolean;
 }
 
-export const CartButton = ({ productId, isPurchased = false }: Props) => {
-  const cart = useCart();
+export const CartButton = ({
+  productId,
+  isPurchased = false,
+  disableProductRemoval,
+}: Props) => {
+  const {
+    getCartProduct,
+    isProductInCart,
+    addProduct,
+    removeProduct,
+    toggleProduct,
+  } = useCart();
+  const cartProduct = getCartProduct(productId);
 
-  if (isPurchased) {
+  if (isProductInCart(productId)) {
+    const qty = cartProduct?.qty ?? 0;
+    const disableRemoval = disableProductRemoval && qty === 1;
     return (
-      <Button
-        variant="elevated"
-        className="flex-1 bg-white font-medium"
-        asChild
-      >
-        <Link href={`${process.env.NEXT_PUBLIC_APP_URL}/library/${productId}`}>
-          View in Library
-        </Link>
-      </Button>
+      <div className="flex items-center justify-center gap-4">
+        <Button
+          variant="elevated"
+          className="size-12 bg-pink-400"
+          disabled={disableRemoval}
+          onClick={() => {
+            if (disableRemoval) return;
+            removeProduct(productId);
+          }}
+        >
+          <MinusIcon />
+        </Button>
+        <span>{qty}</span>
+        <Button
+          variant="elevated"
+          className="size-12 bg-pink-400"
+          onClick={() => addProduct(productId)}
+        >
+          <PlusIcon />
+        </Button>
+      </div>
     );
   }
 
   return (
     <Button
       variant="elevated"
-      className={cn("flex-1 bg-pink-400", {
-        "bg-white": cart.isProductInCart(productId),
-      })}
-      onClick={() => cart.toggleProduct(productId)}
+      className="flex-1 bg-pink-400"
+      onClick={() => toggleProduct(productId)}
     >
-      {cart.isProductInCart(productId) ? "Remove from Cart" : "Add to Cart"}
+      Add to Cart
     </Button>
   );
 };

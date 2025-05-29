@@ -2,11 +2,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 
-interface Props {
-  slug: string;
-}
-
-export const Navbar = ({ slug }: Props) => {
+export const Navbar = () => {
   return (
     <nav className="h-20 border-b bg-white font-medium">
       <div className="mx-auto flex h-full max-w-(--breakpoint-xl) items-center justify-between px-4 lg:px-12">

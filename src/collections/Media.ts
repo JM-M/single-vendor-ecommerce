@@ -1,4 +1,4 @@
-import { isSuperAdmin } from "@/lib/access";
+import { isAdmin, isSuperAdmin } from "@/lib/access";
 import type { CollectionConfig } from "payload";
 
 export const Media: CollectionConfig = {
@@ -8,7 +8,7 @@ export const Media: CollectionConfig = {
     delete: ({ req }) => isSuperAdmin(req.user),
   },
   admin: {
-    hidden: ({ user }) => !isSuperAdmin(user),
+    hidden: ({ user }) => !isAdmin(user),
   },
   fields: [
     {

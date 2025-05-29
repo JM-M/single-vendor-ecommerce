@@ -1,15 +1,16 @@
-import { isSuperAdmin } from "@/lib/access";
+import { isAdmin, isSuperAdmin } from "@/lib/access";
 import type { CollectionConfig } from "payload";
 
 export const Products: CollectionConfig = {
   slug: "products",
   access: {
-    // TODO: Allow Admins to create products toop
-    create: ({ req }) => isSuperAdmin(req.user),
+    create: ({ req }) => isAdmin(req.user),
+    update: ({ req }) => isAdmin(req.user),
     delete: ({ req }) => isSuperAdmin(req.user),
   },
   admin: {
     useAsTitle: "name",
+    hidden: ({ user }) => !isAdmin(user),
   },
   fields: [
     {
