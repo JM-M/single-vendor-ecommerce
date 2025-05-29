@@ -1,13 +1,13 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { InboxIcon, LoaderIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
-import { useTRPC } from "@/trpc/client";
 import { useCart } from "../../hooks/use-cart";
+import { useCheckout } from "../../hooks/use-checkout";
 import { useCheckoutStates } from "../../hooks/use-checkout-states";
 import { CheckoutItem } from "../components/checkout-item";
 import { CheckoutSidebar } from "../components/checkout-sidebar";
@@ -15,38 +15,12 @@ import { CheckoutSidebar } from "../components/checkout-sidebar";
 export const CheckoutView = () => {
   const router = useRouter();
   const [states, setStates] = useCheckoutStates();
-  const { productIds, clearCart, removeProduct } = useCart();
+  const { clearCart, clearProduct } = useCart();
 
-  const trpc = useTRPC();
+  const { checkout } = useCheckout();
+  const { data, error, isLoading } = checkout;
+
   const queryClient = useQueryClient();
-  const { data, error, isLoading } = useQuery(
-    trpc.checkout.getProducts.queryOptions({
-      ids: productIds,
-    }),
-  );
-
-  const purchase = useMutation(
-    trpc.checkout.purchase.mutationOptions({
-      onMutate: () => {
-        setStates({
-          success: false,
-          cancel: false,
-        });
-      },
-      onSuccess: (data) => {
-        window.location.href = data.url;
-      },
-      onError: (error) => {
-        if (error.data?.code === "UNAUTHORIZED") {
-          // TODO: Modify when subdomains are implemented
-          router.push("/sign-in");
-          toast.error("Not logged in.");
-        }
-
-        toast.error(error.message || "An error occurred during checkout.");
-      },
-    }),
-  );
 
   useEffect(() => {
     if (states.success) {
@@ -55,7 +29,8 @@ export const CheckoutView = () => {
         cancel: false,
       });
       clearCart();
-      queryClient.invalidateQueries(trpc.library.getMany.infiniteQueryFilter());
+      // TODO: Invalidate orders query
+      // queryClient.invalidateQueries(trpc.library.getMany.infiniteQueryFilter());
       router.push("/library");
     }
   }, [
@@ -64,7 +39,7 @@ export const CheckoutView = () => {
     router,
     setStates,
     queryClient,
-    trpc.library.getMany,
+    // trpc.library.getMany,
   ]);
 
   // TODO: Rather than clearing the cart, we should remove the mark invalid products
@@ -99,7 +74,7 @@ export const CheckoutView = () => {
   }
 
   return (
-    <div className="px-4 pt-4 lg:px-12 lg:pt-16">
+    <div className="px-4 pt-4 lg:px-12 lg:py-16">
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-7 lg:gap-16">
         <div className="lg:col-span-4">
           <div className="overflow-hidden rounded-md border bg-white">
@@ -109,24 +84,20 @@ export const CheckoutView = () => {
               return (
                 <CheckoutItem
                   key={id}
+                  productId={id}
                   name={name}
                   isLast={isLast}
                   imageUrl={image?.url}
                   productUrl={`/products/${id}`}
                   price={price}
-                  onRemove={() => removeProduct(id)}
+                  onRemove={() => clearProduct(id)}
                 />
               );
             })}
           </div>
         </div>
         <div className="lg:col-span-3">
-          <CheckoutSidebar
-            total={data?.totalPrice || 0}
-            onPurchase={() => purchase.mutate({ productIds })}
-            isCanceled={states.cancel}
-            disabled={purchase.isPending}
-          />
+          <CheckoutSidebar isCanceled={states.cancel} />
         </div>
       </div>
     </div>

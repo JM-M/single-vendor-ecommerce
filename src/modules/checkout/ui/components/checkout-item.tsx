@@ -1,4 +1,5 @@
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { CartButton } from "@/modules/products/ui/components/cart-button";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -8,6 +9,7 @@ interface CheckoutItemProps {
   imageUrl?: string | null;
   productUrl: string;
   price: number;
+  productId: string;
   onRemove: () => void;
 }
 
@@ -17,6 +19,7 @@ export const CheckoutItem = ({
   imageUrl,
   productUrl,
   price,
+  productId,
   onRemove,
 }: CheckoutItemProps) => {
   return (
@@ -44,8 +47,8 @@ export const CheckoutItem = ({
         </div>
       </div>
 
-      <div className="flex flex-col justify-between py-4">
-        <p className="font-medium">{formatCurrency(price)}</p>
+      <div className="flex flex-col items-end justify-between py-4">
+        {/* <p className="font-medium">{formatCurrency(price)}</p> */}
         <button
           type="button"
           className="cursor-pointer font-medium underline"
@@ -53,6 +56,7 @@ export const CheckoutItem = ({
         >
           Remove
         </button>
+        <CartButton productId={productId} disableProductRemoval />
       </div>
     </div>
   );

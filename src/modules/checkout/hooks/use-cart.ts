@@ -5,9 +5,14 @@ import { useCartStore } from "../store/use-cart-store";
 export const useCart = () => {
   const addProduct = useCartStore((state) => state.addProduct);
   const removeProduct = useCartStore((state) => state.removeProduct);
+  const clearProduct = useCartStore((state) => state.clearProduct);
   const clearCart = useCartStore((state) => state.clearCart);
+  const getCartProduct = useCartStore((state) => state.getCartProduct);
+  const products = useCartStore((state) => state.products);
 
-  const productIds = useCartStore(useShallow((state) => state.productIds));
+  const productIds = useCartStore(
+    useShallow((state) => state.products.map((p) => p.id)),
+  );
 
   const toggleProduct = useCallback(
     (productId: string) => {
@@ -27,23 +32,16 @@ export const useCart = () => {
     [productIds],
   );
 
-  const handleAddProduct = useCallback(
-    (productId: string) => addProduct(productId),
-    [addProduct],
-  );
-
-  const handleRemoveProduct = useCallback(
-    (productId: string) => removeProduct(productId),
-    [removeProduct],
-  );
-
   return {
     productIds,
-    addProduct: handleAddProduct,
-    removeProduct: handleRemoveProduct,
+    products,
+    addProduct,
+    removeProduct,
+    clearProduct,
     clearCart,
     toggleProduct,
     isProductInCart,
-    totalItems: productIds.length,
+    getCartProduct,
+    totalItems: products.reduce((acc, product) => acc + product.qty, 0),
   };
 };

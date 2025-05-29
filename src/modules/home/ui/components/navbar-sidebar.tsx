@@ -5,13 +5,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { NavbarItem } from "@/modules/home/types";
 import Link from "next/link";
-import { ReactNode } from "react";
-
-interface NavbarItem {
-  href: string;
-  children: ReactNode;
-}
 
 interface Props {
   items: NavbarItem[];

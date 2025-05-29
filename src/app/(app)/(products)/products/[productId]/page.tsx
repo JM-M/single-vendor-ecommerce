@@ -1,30 +1,25 @@
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-
 import {
   ProductView,
   ProductViewSkeleton,
-} from "@/modules/library/ui/views/product-view";
+} from "@/modules/products/ui/views/product-view";
 import { getQueryClient, trpc } from "@/trpc/server";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
+
 interface Props {
   params: Promise<{
     productId: string;
   }>;
 }
-const LibraryPage = async ({ params }: Props) => {
-  const { productId } = await params;
 
+const ProductPage = async ({ params }: Props) => {
+  const { productId } = await params;
   const queryClient = getQueryClient();
   void queryClient.prefetchQuery(
-    trpc.library.getOne.queryOptions({
-      productId,
-    }),
-  );
-  void queryClient.prefetchQuery(
-    trpc.reviews.getOne.queryOptions({
-      productId,
+    trpc.products.getOne.queryOptions({
+      id: productId,
     }),
   );
 
@@ -36,4 +31,4 @@ const LibraryPage = async ({ params }: Props) => {
     </HydrationBoundary>
   );
 };
-export default LibraryPage;
+export default ProductPage;

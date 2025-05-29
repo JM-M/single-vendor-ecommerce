@@ -7,6 +7,7 @@ import { PropsWithChildren, ReactNode, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { CheckoutButton } from "@/modules/checkout/ui/components/checkout-button";
 import { siteConfig } from "@/site.config";
 import { useTRPC } from "@/trpc/client";
 import { useQuery } from "@tanstack/react-query";
@@ -39,14 +40,6 @@ const NavbarItem = ({ href, isActive = false, children }: NavbarItemProps) => {
   );
 };
 
-const navbarItems = [
-  { href: "/", children: "Home" },
-  { href: "/about", children: "About" },
-  { href: "/features", children: "Features" },
-  { href: "/pricing", children: "Pricing" },
-  { href: "/contact", children: "Contact" },
-];
-
 export const Navbar = () => {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -65,11 +58,11 @@ export const Navbar = () => {
       <NavbarSidebar
         open={isSidebarOpen}
         onOpenChange={setIsSidebarOpen}
-        items={navbarItems}
+        items={siteConfig.navbarItems}
       />
 
       <div className="item-center hidden h-full items-center gap-4 lg:flex">
-        {navbarItems.map((item) => {
+        {siteConfig.navbarItems.map((item) => {
           const { href, children } = item;
           return (
             <NavbarItem key={href} href={href} isActive={pathname === href}>
@@ -79,36 +72,31 @@ export const Navbar = () => {
         })}
       </div>
 
-      {session.data?.user ? (
-        <div className="hidden h-full lg:flex">
-          <Button
-            className="h-full rounded-none border-0 border-l bg-black px-12 text-lg text-white transition-colors hover:bg-pink-400 hover:text-black"
-            asChild
-          >
-            <Link href="/admin">Dashboard</Link>
-          </Button>
-        </div>
-      ) : (
-        <div className="hidden h-full lg:flex">
-          <Button
-            variant="secondary"
-            className="h-full rounded-none border-0 border-l bg-white px-12 text-lg transition-colors hover:bg-pink-400"
-            asChild
-          >
-            <Link prefetch href="/sign-in">
-              Log in
-            </Link>
-          </Button>
-          <Button
-            className="h-full rounded-none border-0 border-l bg-black px-12 text-lg text-white transition-colors hover:bg-pink-400 hover:text-black"
-            asChild
-          >
-            <Link prefetch href="/sign-up">
-              Start selling
-            </Link>
-          </Button>
-        </div>
-      )}
+      <div className="flex h-full items-center gap-4">
+        <CheckoutButton />
+        {session.data?.user ? (
+          <div className="hidden h-full lg:flex">
+            <Button
+              className="h-full rounded-none border-0 border-l bg-black px-12 text-lg text-white transition-colors hover:bg-pink-400 hover:text-black"
+              asChild
+            >
+              <Link href="/admin">Dashboard</Link>
+            </Button>
+          </div>
+        ) : (
+          <div className="hidden h-full lg:flex">
+            <Button
+              variant="secondary"
+              className="h-full rounded-none border-0 border-l bg-white px-12 text-lg transition-colors hover:bg-pink-400"
+              asChild
+            >
+              <Link prefetch href="/sign-in">
+                Log in
+              </Link>
+            </Button>
+          </div>
+        )}
+      </div>
 
       <div className="flex items-center justify-center lg:hidden">
         <Button

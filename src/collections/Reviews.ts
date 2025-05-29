@@ -1,13 +1,13 @@
-import { isSuperAdmin } from "@/lib/access";
+import { isAdmin } from "@/lib/access";
 import type { CollectionConfig } from "payload";
 
 export const Reviews: CollectionConfig = {
   slug: "reviews",
   access: {
-    create: ({ req }) => isSuperAdmin(req.user),
-    update: ({ req }) => isSuperAdmin(req.user),
-    delete: ({ req }) => isSuperAdmin(req.user),
-    read: ({ req }) => isSuperAdmin(req.user), // TODO: Allow admins, not only super admins to read orders.
+    create: () => false,
+    update: () => false,
+    delete: ({ req }) => isAdmin(req.user),
+    read: ({ req }) => isAdmin(req.user),
   },
   admin: {
     useAsTitle: "description",

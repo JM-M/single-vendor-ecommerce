@@ -7,6 +7,10 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "@/trpc/init";
+import {
+  NG_CITY_DELIVERY_PRICES,
+  NG_STATE_DELIVERY_PRICES,
+} from "../constants";
 
 export const checkoutRouter = createTRPCRouter({
   purchase: protectedProcedure
@@ -58,6 +62,14 @@ export const checkoutRouter = createTRPCRouter({
     .input(
       z.object({
         ids: z.array(z.string()),
+        cartProducts: z.array(
+          z.object({
+            id: z.string(),
+            qty: z.number(),
+          }),
+        ),
+        state: z.string().nullable().optional(),
+        city: z.string().nullable().optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -87,14 +99,36 @@ export const checkoutRouter = createTRPCRouter({
         });
       }
 
-      const totalPrice = data.docs.reduce((acc, product) => {
+      // TODO: Add checks in checkout and here to confirm that all cart product quantities
+      // are taken into account
+      const subtotal = data.docs.reduce((acc, product) => {
         const price = Number(product.price);
-        return acc + (isNaN(price) ? 0 : price);
+        const cartProduct = input.cartProducts.find((p) => p.id === product.id);
+        return acc + (isNaN(price) ? 0 : price * (cartProduct?.qty ?? 1));
       }, 0);
+
+      const { city, state } = input;
+      let deliveryFee: number | null = null;
+      if (city && state) {
+        deliveryFee =
+          NG_CITY_DELIVERY_PRICES[
+            state as keyof typeof NG_CITY_DELIVERY_PRICES
+          ][city as any]?.price || null;
+      } else if (state) {
+        deliveryFee =
+          NG_STATE_DELIVERY_PRICES[
+            state as keyof typeof NG_CITY_DELIVERY_PRICES
+          ] || null;
+      }
+
+      let total: number | null = null;
+      if (typeof deliveryFee === "number") total = subtotal + deliveryFee;
 
       return {
         ...data,
-        totalPrice,
+        subtotal,
+        deliveryFee,
+        total,
         docs: data.docs.map((doc) => ({
           ...doc,
           image: doc.image as Media | null,

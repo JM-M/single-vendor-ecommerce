@@ -1,31 +1,56 @@
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
 import { CircleXIcon } from "lucide-react";
+import { useCart } from "../../hooks/use-cart";
+import { useCheckout } from "../../hooks/use-checkout";
+import { usePurchase } from "../../hooks/use-purchase";
+import { DeliveryForm } from "./delivery-form";
 
 interface CheckoutSidebarProps {
-  total: number;
-  onPurchase: () => void;
   isCanceled?: boolean;
-  disabled?: boolean;
 }
 
 export const CheckoutSidebar = ({
-  total,
-  onPurchase,
   isCanceled = false,
-  disabled = false,
 }: CheckoutSidebarProps) => {
+  const { productIds } = useCart();
+  const { checkout } = useCheckout();
+  const { purchase } = usePurchase();
+
+  const { data, isFetching } = checkout;
+  const { subtotal, deliveryFee, total } = data || {};
+  const isLoadingTotal = isFetching;
+  const disabled = purchase.isPending || isFetching;
+
   return (
     <div className="flex flex-col overflow-hidden rounded-md border bg-white">
+      <DeliveryForm />
+
+      <div className="flex items-center justify-between border-b p-4">
+        <h4 className="text-lg font-medium">Subtotal</h4>
+        <p className="text-lg font-medium">
+          {isLoadingTotal
+            ? "Loading..."
+            : formatCurrency(subtotal, { fallback: "--" })}
+        </p>
+      </div>
+      <div className="flex items-center justify-between border-b p-4">
+        <h4 className="text-lg font-medium">Delivery</h4>
+        <p className="text-lg font-medium">
+          {formatCurrency(deliveryFee, { fallback: "--" })}
+        </p>
+      </div>
       <div className="flex items-center justify-between border-b p-4">
         <h4 className="text-lg font-medium">Total</h4>
-        <p className="text-lg font-medium">{formatCurrency(total)}</p>
+        <p className="text-lg font-medium">
+          {formatCurrency(total, { fallback: "--" })}
+        </p>
       </div>
       <div className="flex items-center justify-center p-4">
         <Button
           variant="elevated"
           disabled={disabled}
-          onClick={onPurchase}
+          onClick={() => purchase.mutate({ productIds })}
           className="bg-primary hover:text-primary w-full text-base text-white hover:bg-pink-400"
         >
           Checkout

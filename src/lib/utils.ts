@@ -5,7 +5,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatCurrency(value: number | string): string {
+export function formatCurrency(
+  value: number | string | null | undefined,
+  options?: { fallback: string },
+): string {
+  const { fallback = "" } = options || {};
+  if (!value) return fallback;
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
