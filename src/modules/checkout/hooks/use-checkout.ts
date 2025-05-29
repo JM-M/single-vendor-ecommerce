@@ -13,9 +13,9 @@ export const useCheckout = () => {
   const trpc = useTRPC();
 
   const checkout = useQuery(
-    trpc.checkout.getProducts.queryOptions(
+    trpc.checkout.getCheckoutData.queryOptions(
       {
-        ids: productIds,
+        productIds,
         cartProducts: products,
         state: delivery.state,
         city: delivery.city,

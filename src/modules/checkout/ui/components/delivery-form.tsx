@@ -45,10 +45,11 @@ export const DeliveryForm = () => {
 
   const state = form.watch("state");
   const city = form.watch("city");
+  const email = form.watch("email");
   useEffect(() => {
     // This runs whenever any field changes
-    setDelivery({ state, city });
-  }, [state, city, setDelivery]);
+    setDelivery({ state, city, email });
+  }, [state, city, email, setDelivery]);
 
   const stateComboboxOptions = NG_STATES.filter(
     (state) =>
