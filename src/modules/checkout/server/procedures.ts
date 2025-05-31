@@ -182,7 +182,6 @@ export const checkoutRouter = createTRPCRouter({
         products: data.docs,
         cartProducts: input.cartProducts,
       });
-      console.log("Checkout: ", { subtotal, deliveryFee, total });
 
       return {
         ...data,

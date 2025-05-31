@@ -252,4 +252,156 @@ export const productsRouter = createTRPCRouter({
         })),
       };
     }),
+  search: baseProcedure
+    .input(
+      z.object({
+        cursor: z.number().default(1),
+        limit: z.number().default(DEFAULT_LIMIT),
+        search: z.string(),
+        category: z.string().nullable().optional(),
+        minPrice: z.string().nullable().optional(),
+        maxPrice: z.string().nullable().optional(),
+        tags: z.array(z.string()).nullable().optional(),
+        sort: z.enum(sortValues).nullable().optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      if (!input.search)
+        return {
+          docs: [],
+          totalDocs: 0,
+          limit: input.limit,
+          page: input.cursor,
+          totalPages: 0,
+          hasNextPage: false,
+          hasPrevPage: false,
+          nextPage: null,
+          prevPage: null,
+        };
+
+      const where: Where = {
+        isArchived: {
+          not_equals: true,
+        },
+        name: {
+          like: input.search,
+        },
+      };
+      let sort: Sort = "-createdAt";
+
+      // TODO: Implement proper sorting
+      if (input.sort === "trending") {
+        sort = "name";
+      }
+
+      if (input.sort === "curated") {
+        sort = "+createdAt";
+      }
+
+      if (input.sort === "hot_and_new") {
+        sort = "-createdAt";
+      }
+
+      if (input.minPrice) {
+        where.price = {
+          ...(where.price || {}),
+          greater_than_equal: input.minPrice,
+        };
+      }
+
+      if (input.maxPrice) {
+        where.price = {
+          ...(where.price || {}),
+          less_than_equal: input.maxPrice,
+        };
+      }
+
+      if (input.category) {
+        const categoriesData = await ctx.db.find({
+          collection: "categories",
+          limit: 1,
+          depth: 1,
+          pagination: false,
+          where: {
+            slug: {
+              equals: input.category,
+            },
+          },
+        });
+
+        const formattedData = categoriesData.docs.map((doc) => ({
+          ...doc,
+          subcategories: (doc.subcategories?.docs ?? []).map((doc) => ({
+            // Because of "depth: 1", we are confident doc will be a category
+            ...(doc as Category),
+            subcategories: undefined,
+          })),
+        }));
+
+        const subcategorySlugs = [];
+        const parentCategory = formattedData.at(0);
+
+        if (parentCategory) {
+          subcategorySlugs.push(
+            ...parentCategory.subcategories.map(
+              (subcategory) => subcategory.slug,
+            ),
+          );
+
+          where["category.slug"] = {
+            in: [parentCategory.slug, ...subcategorySlugs],
+          };
+        }
+      }
+
+      if (input.tags && input.tags.length) {
+        where["tags.name"] = {
+          in: input.tags,
+        };
+      }
+
+      const data = await ctx.db.find({
+        collection: "products",
+        depth: 2, // Populate "category" and "image"
+        where,
+        sort,
+        page: input.cursor,
+        limit: input.limit,
+        select: {
+          content: false,
+        },
+      });
+
+      const dataWithSummarizedReviews = await Promise.all(
+        data.docs.map(async (doc) => {
+          const reviewsData = await ctx.db.find({
+            collection: "reviews",
+            pagination: false,
+            where: {
+              product: {
+                equals: doc.id,
+              },
+            },
+          });
+
+          return {
+            ...doc,
+            reviewCount: reviewsData.totalDocs,
+            reviewRating:
+              reviewsData.docs.reduce(
+                (acc, review) => acc + (review.rating || 0),
+                0,
+              ) / (reviewsData.totalDocs || 1),
+          };
+        }),
+      );
+
+      return {
+        ...data,
+        docs: dataWithSummarizedReviews.map((doc) => ({
+          ...doc,
+          image: doc.image as Media | null,
+        })),
+      };
+    }),
 });

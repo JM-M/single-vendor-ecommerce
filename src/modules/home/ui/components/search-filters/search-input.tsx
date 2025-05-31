@@ -1,13 +1,14 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Backdrop } from "@/components/backdrop";
 import { Input } from "@/components/ui/input";
+import { DEFAULT_LIMIT } from "@/constants";
 import { useTRPC } from "@/trpc/client";
-import { useQuery } from "@tanstack/react-query";
-import { BookmarkCheckIcon, ListFilterIcon, SearchIcon } from "lucide-react";
-import Link from "next/link";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { LoaderIcon, SearchIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { CategoriesSidebar } from "./categories-sidebar";
+import { useDebounce } from "use-debounce";
+import { SearchInputResults } from "./search-input-results";
 
 interface Props {
   disabled?: boolean;
@@ -21,10 +22,33 @@ export const SearchInput = ({
   onChange,
 }: Props) => {
   const [searchValue, setSearchValue] = useState(defaultValue);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [debouncedSearchValue] = useDebounce(searchValue, 500);
+  const [isOpen, setIsOpen] = useState(false);
 
   const trpc = useTRPC();
-  const session = useQuery(trpc.auth.session.queryOptions());
+  const {
+    data,
+    isLoading,
+    isFetching,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useSuspenseInfiniteQuery(
+    trpc.products.getMany.infiniteQueryOptions(
+      {
+        search: debouncedSearchValue,
+        limit: DEFAULT_LIMIT,
+      },
+      {
+        getNextPageParam: (lastPage) => {
+          return lastPage.docs.length > 0 ? lastPage.nextPage : undefined;
+        },
+        enabled: !!debouncedSearchValue,
+      },
+    ),
+  );
+
+  const products = data?.pages.flatMap((page) => page.docs);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -34,36 +58,42 @@ export const SearchInput = ({
     return () => clearTimeout(timeoutId);
   }, [onChange, searchValue]);
 
+  useEffect(() => {
+    const onScroll = () => {
+      setIsOpen(false);
+    };
+    window.addEventListener("scroll", onScroll);
+
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [setIsOpen]);
+
   return (
     <div className="flex w-full items-center gap-2">
-      <CategoriesSidebar open={isSidebarOpen} onOpenChange={setIsSidebarOpen} />
-      <div className="relative w-full">
+      {isOpen && <Backdrop className="z-10" onClick={() => setIsOpen(false)} />}
+      <div className="relative z-10 w-full">
         <SearchIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-neutral-500" />
         <Input
           className="pl-8"
           placeholder="Search products"
           value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
+          onChange={(e) => {
+            if (products && products.length > 0 && !isOpen) {
+              setIsOpen(true);
+            }
+            if (!e.target.value) setIsOpen(false);
+            setSearchValue(e.target.value);
+          }}
           disabled={disabled}
         />
+        {/* TODO: Debug loading state */}
+        {isFetching && (
+          <LoaderIcon className="absolute top-1/2 right-3 size-5 -translate-y-1/2 animate-spin text-neutral-500" />
+        )}
+        {isOpen && <SearchInputResults products={products} />}
       </div>
-      {/* TODO: Add categories view all button */}
-      <Button
-        variant="elevated"
-        className="flex size-12 shrink-0 lg:hidden"
-        onClick={() => setIsSidebarOpen(true)}
-      >
-        <ListFilterIcon />
-      </Button>
-      {/* TODO: Add library button */}
-      {session.data?.user && (
-        <Button variant="elevated" asChild>
-          <Link prefetch href="/library">
-            <BookmarkCheckIcon />
-            Library
-          </Link>
-        </Button>
-      )}
+      {/* <Button variant="elevated" asChild>
+        <Link href={`/s?q=${searchValue}`}>Search</Link>
+      </Button> */}
     </div>
   );
 };

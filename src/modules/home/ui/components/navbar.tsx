@@ -13,6 +13,7 @@ import { useTRPC } from "@/trpc/client";
 import { useQuery } from "@tanstack/react-query";
 import { MenuIcon } from "lucide-react";
 import { NavbarSidebar } from "./navbar-sidebar";
+import { SearchInput } from "./search-filters/search-input";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -43,12 +44,13 @@ const NavbarItem = ({ href, isActive = false, children }: NavbarItemProps) => {
 export const Navbar = () => {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const trpc = useTRPC();
   const session = useQuery(trpc.auth.session.queryOptions());
 
   return (
-    <nav className="flex h-20 items-center justify-between border-b bg-white font-medium">
+    <nav className="flex h-20 items-center justify-between gap-4 border-b bg-white font-medium">
       <Link href="/" className="pl-6">
         <span className={cn("text-5xl font-semibold", poppins.className)}>
           {siteConfig.name}
@@ -70,6 +72,13 @@ export const Navbar = () => {
             </NavbarItem>
           );
         })}
+      </div>
+
+      <div className="h-hull flex flex-1 items-center">
+        <SearchInput
+          defaultValue={searchTerm}
+          onChange={(value) => setSearchTerm(value)}
+        />
       </div>
 
       <div className="flex h-full items-center gap-4">
