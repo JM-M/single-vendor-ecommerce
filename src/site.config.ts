@@ -2,5 +2,5 @@ import { NavbarItem } from "./modules/home/types";
 
 export const siteConfig = {
   name: "BeeCee",
-  navbarItems: [{ href: "/", children: "Home" }] as NavbarItem[],
+  navbarItems: [] as NavbarItem[],
 } as const;

@@ -2,10 +2,7 @@ import { PropsWithChildren, Suspense } from "react";
 
 import Footer from "@/modules/home/ui/components/footer";
 import { Navbar } from "@/modules/home/ui/components/navbar";
-import {
-  SearchFilters,
-  SearchFiltersSkeleton,
-} from "@/modules/home/ui/components/search-filters";
+import { SearchFilters } from "@/modules/home/ui/components/search-filters";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
@@ -18,7 +15,8 @@ const Layout = async ({ children }: Props) => {
     <div className="flex min-h-screen flex-col">
       <Navbar />
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <Suspense fallback={<SearchFiltersSkeleton />}>
+        {/* TODO: Implement navbar skeleton */}
+        <Suspense fallback={"Loading..."}>
           <SearchFilters />
         </Suspense>
       </HydrationBoundary>
