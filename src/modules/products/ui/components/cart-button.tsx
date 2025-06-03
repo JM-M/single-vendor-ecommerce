@@ -26,10 +26,10 @@ export const CartButton = ({
     const qty = cartProduct?.qty ?? 0;
     const disableRemoval = disableProductRemoval && qty === 1;
     return (
-      <div className="flex items-center justify-center gap-4">
+      <div className="flex w-full items-center justify-between gap-4">
         <Button
           variant="elevated"
-          className="size-12 bg-pink-400"
+          className="size-12 bg-white"
           disabled={disableRemoval}
           onClick={() => {
             if (disableRemoval) return;
@@ -41,7 +41,7 @@ export const CartButton = ({
         <span>{qty}</span>
         <Button
           variant="elevated"
-          className="size-12 bg-pink-400"
+          className="size-12 bg-white"
           onClick={() => addProduct(productId)}
         >
           <PlusIcon />
@@ -53,7 +53,7 @@ export const CartButton = ({
   return (
     <Button
       variant="elevated"
-      className="flex-1 bg-pink-400"
+      className="min-h-12 flex-1 border bg-white"
       onClick={() => toggleProduct(productId)}
     >
       Add to Cart

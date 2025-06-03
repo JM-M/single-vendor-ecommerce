@@ -1,4 +1,4 @@
-import { parseAsBoolean, useQueryStates } from "nuqs";
+import { parseAsBoolean, parseAsString, useQueryStates } from "nuqs";
 
 export const useCheckoutStates = () => {
   return useQueryStates({
@@ -6,6 +6,9 @@ export const useCheckoutStates = () => {
       clearOnDefault: true,
     }),
     cancel: parseAsBoolean.withDefault(false).withOptions({
+      clearOnDefault: true,
+    }),
+    buyProductNow: parseAsString.withDefault("").withOptions({
       clearOnDefault: true,
     }),
   });

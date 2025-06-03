@@ -19,16 +19,16 @@ const measureOrderCost = ({
   city,
   state,
   products,
-  cartProducts,
+  checkoutProducts,
 }: {
   city?: string | null;
   state?: string | null;
   products: Product[];
-  cartProducts: CartProduct[];
+  checkoutProducts: CartProduct[];
 }) => {
   const subtotal = products.reduce((acc, product) => {
     const price = Number(product.price);
-    const cartProduct = cartProducts.find((p) => p.id === product.id);
+    const cartProduct = checkoutProducts.find((p) => p.id === product.id);
     return acc + (isNaN(price) ? 0 : price * (cartProduct?.qty ?? 1));
   }, 0);
 
@@ -60,7 +60,7 @@ export const checkoutRouter = createTRPCRouter({
       z.object({
         email: z.string(),
         productIds: z.array(z.string()).min(1),
-        cartProducts: z.array(
+        checkoutProducts: z.array(
           z.object({
             id: z.string(),
             qty: z.number(),
@@ -103,8 +103,10 @@ export const checkoutRouter = createTRPCRouter({
         city: input.city,
         state: input.state,
         products: productsData.docs,
-        cartProducts: input.cartProducts,
+        checkoutProducts: input.checkoutProducts,
       });
+
+      // TODO: Fix bug with descrepancy between displayed total and actual total
 
       if (total !== input.displayedTotal) {
         throw new TRPCError({
@@ -136,7 +138,7 @@ export const checkoutRouter = createTRPCRouter({
     .input(
       z.object({
         productIds: z.array(z.string()),
-        cartProducts: z.array(
+        checkoutProducts: z.array(
           z.object({
             id: z.string(),
             qty: z.number(),
@@ -180,7 +182,7 @@ export const checkoutRouter = createTRPCRouter({
         city: input.city,
         state: input.state,
         products: data.docs,
-        cartProducts: input.cartProducts,
+        checkoutProducts: input.checkoutProducts,
       });
 
       return {
