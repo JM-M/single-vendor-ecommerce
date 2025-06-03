@@ -1,7 +1,6 @@
 "use client";
 
 import { InboxIcon, LoaderIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
@@ -9,9 +8,9 @@ import { useCart } from "../../hooks/use-cart";
 import { useCheckout } from "../../hooks/use-checkout";
 import { CheckoutItem } from "../components/checkout-item";
 import { CheckoutSidebar } from "../components/checkout-sidebar";
+import { DeliveryForm } from "../components/delivery-form";
 
 export const CheckoutView = () => {
-  const router = useRouter();
   const { clearCart, clearProduct } = useCart();
 
   const { checkout } = useCheckout();
@@ -50,8 +49,8 @@ export const CheckoutView = () => {
 
   return (
     <div className="px-4 pt-4 lg:px-12 lg:py-16">
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-7 lg:gap-16">
-        <div className="lg:col-span-4">
+      <div className="relative grid grid-cols-1 gap-4 lg:grid-cols-7 lg:gap-16">
+        <div className="space-y-4 lg:col-span-4">
           <div className="overflow-hidden rounded-md border bg-white">
             {data?.docs.map((product, index) => {
               const { id, name, price, image } = product;
@@ -70,8 +69,11 @@ export const CheckoutView = () => {
               );
             })}
           </div>
+          <div className="flex flex-col overflow-hidden rounded-md border bg-white">
+            <DeliveryForm />
+          </div>
         </div>
-        <div className="lg:col-span-3">
+        <div className="sticky top-10 h-fit lg:col-span-3">
           <CheckoutSidebar />
         </div>
       </div>

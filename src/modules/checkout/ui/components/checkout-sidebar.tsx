@@ -3,7 +3,6 @@ import { formatCurrency } from "@/lib/utils";
 import { useCart } from "../../hooks/use-cart";
 import { useCheckout } from "../../hooks/use-checkout";
 import { usePurchase } from "../../hooks/use-purchase";
-import { DeliveryForm } from "./delivery-form";
 
 export const CheckoutSidebar = () => {
   const { productIds, products: cartProducts } = useCart();
@@ -16,9 +15,7 @@ export const CheckoutSidebar = () => {
   const disabled = purchase.isPending || isFetching;
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-md border bg-white">
-      <DeliveryForm />
-
+    <div className="mb-10 flex flex-col overflow-hidden rounded-md border bg-white">
       <div className="flex items-center justify-between border-b p-4">
         <h4 className="text-lg font-medium">Subtotal</h4>
         <p className="text-lg font-medium">
@@ -47,7 +44,7 @@ export const CheckoutSidebar = () => {
             purchase.mutate({
               email: delivery.email,
               productIds,
-              cartProducts: cartProducts ?? [],
+              checkoutProducts: cartProducts ?? [],
               state: delivery.state,
               city: delivery.city,
               displayedTotal: total ?? 0,

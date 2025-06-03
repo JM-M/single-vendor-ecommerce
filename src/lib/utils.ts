@@ -11,9 +11,9 @@ export function formatCurrency(
 ): string {
   const { fallback = "" } = options || {};
   if (!value) return fallback;
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("en-NG", {
     style: "currency",
-    currency: "USD",
+    currency: "NGN",
     maximumFractionDigits: 0,
   }).format(Number(value));
 }
